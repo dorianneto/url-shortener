@@ -7,10 +7,10 @@ import (
 )
 
 type Redirect struct {
-	ID        string    `json:id`
-	Url       string    `json:url`
-	Code      string    `uri:"code" binding:"required"`
-	CreatedAt time.Time `json:created_at`
+	ID        string    `json:"id"`
+	Url       string    `json:"url"`
+	Code      string    `json:"code"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func newRedirect(url string, code string) *Redirect {

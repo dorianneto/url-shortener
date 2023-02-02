@@ -1,10 +1,10 @@
-GET http://localhost:8080/fmk82 HTTP/1.1
+GET http://localhost:8080/gfd2345 HTTP/1.1
 
 ###
 
-POST http://localhost:8080/ HTTP/1.1
+POST http://localhost:8080 HTTP/1.1
 content-type: application/json
 
 {
-    "url": "https://google.com",
+    "code": "123asdadas2das"
 }

@@ -11,6 +11,7 @@ func main() {
 	redirectController := controller.RedirectController{}
 
 	router.GET("/:code", redirectController.Index)
+	router.POST("/", redirectController.Store)
 
 	router.Run(":8080")
 }

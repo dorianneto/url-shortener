@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/dorianneto/url-shortener/src/model"
 	"github.com/gin-gonic/gin"
 )
@@ -8,10 +10,16 @@ import (
 type RedirectController struct{}
 
 func (redirect *RedirectController) Index(c *gin.Context) {
+	code := c.Param("code")
+
+	c.JSON(200, gin.H{"code": code})
+}
+
+func (redirect *RedirectController) Store(c *gin.Context) {
 	var redirectModel model.Redirect
 
-	if err := c.ShouldBindUri(&redirectModel); err != nil {
-		c.JSON(400, gin.H{"message": err})
+	if err := c.ShouldBindJSON(&redirectModel); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err})
 		return
 	}
 
