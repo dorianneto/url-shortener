@@ -13,7 +13,7 @@ type Redirect struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func newRedirect(url string, code string) *Redirect {
+func NewRedirect(url string, code string) *Redirect {
 	redirect := Redirect{
 		Url:  url,
 		Code: code,
