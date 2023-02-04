@@ -4,13 +4,16 @@ import (
 	"net/http"
 
 	"github.com/dorianneto/url-shortener/src/input"
+	createredirectjob "github.com/dorianneto/url-shortener/src/job/createRedirect"
 	"github.com/dorianneto/url-shortener/src/model"
+	"github.com/dorianneto/url-shortener/src/queue"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
 
 type RedirectController struct {
-	Validate *validator.Validate
+	Validate    *validator.Validate
+	QueueClient queue.QueueClient
 }
 
 func (redirect *RedirectController) Index(c *gin.Context) {
@@ -27,13 +30,15 @@ func (redirect *RedirectController) Store(c *gin.Context) {
 		return
 	}
 
-	// TODO: move to an use case/service
+	// TODO: move to job
 	url, err := model.NewRedirect(redirect.Validate, payload.Url, "fmk782ssd")
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
+
+	redirect.QueueClient.Dispatch(&createredirectjob.CreateRedirectJob{Data: url})
 
 	c.JSON(http.StatusOK, gin.H{"data": url})
 }
