@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/go-playground/validator/v10"
+	"github.com/dorianneto/url-shortener/src/validator"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -14,7 +14,8 @@ type Redirect struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func (redirect *Redirect) isValid(validate *validator.Validate) error {
+func (redirect *Redirect) isValid() error {
+	validate := validator.ValidatorAdapter{}
 	err := validate.Struct(redirect)
 
 	if err != nil {
@@ -24,7 +25,7 @@ func (redirect *Redirect) isValid(validate *validator.Validate) error {
 	return nil
 }
 
-func NewRedirect(validate *validator.Validate, url string, code string) (*Redirect, error) {
+func NewRedirect(url string, code string) (*Redirect, error) {
 	redirect := Redirect{
 		Url:  url,
 		Code: code,
@@ -33,7 +34,7 @@ func NewRedirect(validate *validator.Validate, url string, code string) (*Redire
 	redirect.ID = uuid.NewV4().String()
 	redirect.CreatedAt = time.Now()
 
-	err := redirect.isValid(validate)
+	err := redirect.isValid()
 
 	if err != nil {
 		return nil, err
