@@ -1,6 +1,6 @@
 package job
 
 type JobInterface interface {
-	PreEnqueue() BaseInputInterface
+	PreEnqueue() InputInterface
 	// Handle() error
 }

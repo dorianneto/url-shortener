@@ -1,4 +1,4 @@
-package createredirectjob
+package job
 
 import (
 	"github.com/dorianneto/url-shortener/src/model"

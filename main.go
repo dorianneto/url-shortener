@@ -2,13 +2,13 @@ package main
 
 import (
 	"github.com/dorianneto/url-shortener/src/controller"
-	asynqclient "github.com/dorianneto/url-shortener/src/queue/asynq"
+	queue "github.com/dorianneto/url-shortener/src/queue/asynq"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
-	queue := asynqclient.AsynqClient{}
+	queue := queue.AsynqClientAdapter{}
 
 	redirectController := controller.RedirectController{QueueClient: &queue}
 
