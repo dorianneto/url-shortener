@@ -7,6 +7,7 @@ require (
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/goccy/go-json v0.10.0
 	github.com/hibiken/asynq v0.24.0
+	github.com/joho/godotenv v1.5.1
 	github.com/satori/go.uuid v1.2.0
 )
 
