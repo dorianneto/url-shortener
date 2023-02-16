@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/dorianneto/url-shortener/src/controller"
+	"github.com/dorianneto/url-shortener/src/job"
 	queue "github.com/dorianneto/url-shortener/src/queue/asynq"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -18,9 +19,14 @@ func init() {
 
 func main() {
 	router := gin.Default()
-	queue := queue.AsynqClientAdapter{}
+	queueClient := queue.AsynqClientAdapter{}
+	queueServer := queue.AsynqServerdapter{}
 
-	redirectController := controller.RedirectController{QueueClient: &queue}
+	queueServer.RegisterWorker(&job.CreateRedirectJob{})
+
+	go queueServer.RunWorkers()
+
+	redirectController := controller.RedirectController{QueueClient: &queueClient}
 
 	router.GET("/:code", redirectController.Index)
 	router.POST("/", redirectController.Store)

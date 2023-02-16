@@ -2,6 +2,7 @@ package queue
 
 import (
 	"log"
+	"os"
 
 	"github.com/dorianneto/url-shortener/src/job"
 	"github.com/goccy/go-json"
@@ -14,29 +15,28 @@ type AsynqClientAdapter struct {
 
 func (queue *AsynqClientAdapter) getInstance() *asynq.Client {
 	if queue.client == nil {
-		queue.client = asynq.NewClient(asynq.RedisClientOpt{Addr: "localhost:6379"})
+		queue.client = asynq.NewClient(asynq.RedisClientOpt{Addr: os.Getenv("REDIS_ADDR")})
 	}
 
 	return queue.client
 }
 
 func (queue *AsynqClientAdapter) Dispatch(job job.JobInterface) error {
-	input := job.PreEnqueue()
+	typeName, data := job.Boot()
 
-	typeName := input.QueueName()
-	payload, err := json.Marshal(input)
-
+	payload, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	result, err := queue.getInstance().Enqueue(asynq.NewTask(typeName, payload))
+	client := queue.getInstance()
 
+	result, err := client.Enqueue(asynq.NewTask(typeName, payload))
 	if err != nil {
 		return err
 	}
 
-	log.Printf(" [*] Successfully enqueued task: %+v", result)
+	log.Printf("[*] Successfully enqueued task: %+v", result)
 
 	return nil
 }
