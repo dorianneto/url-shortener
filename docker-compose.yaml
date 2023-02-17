@@ -1,15 +1,37 @@
 version: '3.9'
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: ./.docker/app/Dockerfile
     restart: always
     ports:
       - 8080:8080
     volumes:
       - .:/usr/src/app
+    depends_on:
+      - redis
+      - firestore
+    networks:
+      - backend
 
   redis:
     image: redis:alpine
     restart: always
     ports:
       - 6379:6379
+    networks:
+      - backend
+
+  firestore:
+    build:
+      context: .
+      dockerfile: ./.docker/firestore/Dockerfile
+    environment:
+      - PORT=9000
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
