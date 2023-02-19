@@ -7,17 +7,25 @@ import (
 	"github.com/dorianneto/url-shortener/src/job"
 	"github.com/dorianneto/url-shortener/src/model"
 	"github.com/dorianneto/url-shortener/src/queue"
+	"github.com/dorianneto/url-shortener/src/repository"
 	"github.com/gin-gonic/gin"
 )
 
 type RedirectController struct {
 	QueueClient queue.QueueClientInterface
+	Repository  repository.RepositoryInterface
 }
 
-func (redirect *RedirectController) Index(c *gin.Context) {
+func (r *RedirectController) Index(c *gin.Context) {
 	code := c.Param("code")
 
-	c.JSON(http.StatusOK, gin.H{"code": code})
+	data, err := r.Repository.Find()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": code, "data": data})
 }
 
 func (redirect *RedirectController) Store(c *gin.Context) {

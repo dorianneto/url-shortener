@@ -5,10 +5,12 @@ import (
 	"log"
 
 	"github.com/dorianneto/url-shortener/src/model"
+	"github.com/dorianneto/url-shortener/src/repository"
 )
 
 type CreateRedirectJob struct {
-	Payload *model.Redirect
+	Payload    *model.Redirect
+	Repository repository.RepositoryInterface
 }
 
 func (j *CreateRedirectJob) queueName() string {
@@ -28,8 +30,12 @@ func (j *CreateRedirectJob) Handler(data interface{}) error {
 		return err
 	}
 
-	// TODO: save into a database
-	log.Printf(" [*] Successfully processed data from queue %s", redirect.ID)
+	result, err := j.Repository.Create()
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(result)
 	return nil
 
 }
