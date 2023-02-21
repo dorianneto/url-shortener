@@ -1,6 +1,7 @@
 package model
 
 import (
+	"math/rand"
 	"time"
 
 	"github.com/dorianneto/url-shortener/src/validator"
@@ -25,13 +26,24 @@ func (redirect *Redirect) isValid() error {
 	return nil
 }
 
-func NewRedirect(url string, code string) (*Redirect, error) {
+func (r *Redirect) generateCode() string {
+	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	b := make([]byte, 12)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+
+	return string(b)
+}
+
+func NewRedirect(url string) (*Redirect, error) {
 	redirect := Redirect{
-		Url:  url,
-		Code: code,
+		Url: url,
 	}
 
 	redirect.ID = uuid.NewV4().String()
+	redirect.Code = redirect.generateCode()
 	redirect.CreatedAt = time.Now()
 
 	err := redirect.isValid()

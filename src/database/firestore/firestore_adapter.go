@@ -43,22 +43,10 @@ func (fa *FilestoreAdapter) Read() (interface{}, error) {
 	return document.Data(), nil
 }
 
-type State struct {
-	Capital    string
-	Population float32
-}
+func (fa *FilestoreAdapter) Write(code string, data interface{}) (interface{}, error) {
+	document := fa.getClient().Doc("Redirects/" + code)
 
-func (fa *FilestoreAdapter) Write() (interface{}, error) {
-	states := fa.getClient().Collection("States")
-
-	ca := states.Doc("California")
-
-	data := State{
-		Capital:    "Sacramento",
-		Population: 39.14,
-	}
-
-	_, err := ca.Set(fa.contextBackground, data)
+	_, err := document.Set(fa.contextBackground, data)
 	if err != nil {
 		return nil, err
 	}

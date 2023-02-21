@@ -2,7 +2,6 @@ package job
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/dorianneto/url-shortener/src/model"
 	"github.com/dorianneto/url-shortener/src/repository"
@@ -22,20 +21,20 @@ func (j *CreateRedirectJob) Boot() (string, interface{}) {
 }
 
 func (j *CreateRedirectJob) Handler(data interface{}) error {
-	var redirect model.Redirect
+	var (
+		err      error
+		redirect *model.Redirect
+	)
 
-	err := json.Unmarshal(data.([]byte), &redirect)
+	err = json.Unmarshal(data.([]byte), &redirect)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
-	result, err := j.Repository.Create()
+	_, err = j.Repository.Create(redirect)
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 
-	log.Println(result)
 	return nil
-
 }

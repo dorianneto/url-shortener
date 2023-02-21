@@ -36,9 +36,7 @@ func (redirect *RedirectController) Store(c *gin.Context) {
 		return
 	}
 
-	// TODO: move to job
-	data, err := model.NewRedirect(payload.Url, "fmk782ssd")
-
+	data, err := model.NewRedirect(payload.Url)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return

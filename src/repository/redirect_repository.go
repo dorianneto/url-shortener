@@ -1,6 +1,9 @@
 package repository
 
-import "github.com/dorianneto/url-shortener/src/database"
+import (
+	"github.com/dorianneto/url-shortener/src/database"
+	"github.com/dorianneto/url-shortener/src/model"
+)
 
 type RedirectRepository struct {
 	Database database.DatabaseInterface
@@ -15,8 +18,8 @@ func (rr *RedirectRepository) Find() (interface{}, error) {
 	return result, nil
 }
 
-func (rr *RedirectRepository) Create() (interface{}, error) {
-	result, err := rr.Database.Write()
+func (rr *RedirectRepository) Create(data *model.Redirect) (interface{}, error) {
+	result, err := rr.Database.Write(data.Code, data)
 	if err != nil {
 		return nil, err
 	}
