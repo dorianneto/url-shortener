@@ -9,8 +9,8 @@ type RedirectRepository struct {
 	Database database.DatabaseInterface
 }
 
-func (rr *RedirectRepository) Find() (interface{}, error) {
-	result, err := rr.Database.Read()
+func (rr *RedirectRepository) Find(code string) (interface{}, error) {
+	result, err := rr.Database.Read(code)
 	if err != nil {
 		return nil, err
 	}

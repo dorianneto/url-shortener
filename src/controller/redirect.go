@@ -17,15 +17,13 @@ type RedirectController struct {
 }
 
 func (r *RedirectController) Index(c *gin.Context) {
-	code := c.Param("code")
-
-	data, err := r.Repository.Find()
+	data, err := r.Repository.Find(c.Param("code"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"code": code, "data": data})
+	c.JSON(http.StatusOK, gin.H{"data": data})
 }
 
 func (redirect *RedirectController) Store(c *gin.Context) {

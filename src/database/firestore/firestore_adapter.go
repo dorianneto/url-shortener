@@ -32,8 +32,8 @@ func (fa *FilestoreAdapter) Close() error {
 	return fa.getClient().Close()
 }
 
-func (fa *FilestoreAdapter) Read() (interface{}, error) {
-	data := fa.getClient().Doc("States/California")
+func (fa *FilestoreAdapter) Read(code string) (interface{}, error) {
+	data := fa.getClient().Doc("Redirects/" + code)
 
 	document, err := data.Get(fa.contextBackground)
 	if err != nil {
