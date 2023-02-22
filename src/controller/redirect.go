@@ -42,5 +42,5 @@ func (redirect *RedirectController) Store(c *gin.Context) {
 
 	redirect.QueueClient.Dispatch(&job.CreateRedirectJob{Payload: data})
 
-	c.JSON(http.StatusOK, gin.H{"data": data})
+	c.JSON(http.StatusCreated, gin.H{"data": data})
 }

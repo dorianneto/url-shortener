@@ -6,7 +6,7 @@ import (
 )
 
 type RedirectRepository struct {
-	Database database.DatabaseInterface
+	Database database.DocumentInterface
 }
 
 func (rr *RedirectRepository) Find(code string) (interface{}, error) {
@@ -18,8 +18,10 @@ func (rr *RedirectRepository) Find(code string) (interface{}, error) {
 	return result, nil
 }
 
-func (rr *RedirectRepository) Create(data *model.Redirect) (interface{}, error) {
-	result, err := rr.Database.Write(data.Code, data)
+func (rr *RedirectRepository) Create(data interface{}) (interface{}, error) {
+	redirect := data.(*model.Redirect)
+
+	result, err := rr.Database.Write(redirect.Code, redirect)
 	if err != nil {
 		return nil, err
 	}

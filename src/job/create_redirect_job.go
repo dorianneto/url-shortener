@@ -2,6 +2,7 @@ package job
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/dorianneto/url-shortener/src/model"
 	"github.com/dorianneto/url-shortener/src/repository"
@@ -35,6 +36,8 @@ func (j *CreateRedirectJob) Handler(data interface{}) error {
 	if err != nil {
 		return err
 	}
+
+	log.Printf("[*] Successfully handled: %+v", redirect)
 
 	return nil
 }

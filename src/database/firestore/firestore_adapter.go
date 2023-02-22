@@ -32,8 +32,8 @@ func (fa *FilestoreAdapter) Close() error {
 	return fa.getClient().Close()
 }
 
-func (fa *FilestoreAdapter) Read(code string) (interface{}, error) {
-	data := fa.getClient().Doc("Redirects/" + code)
+func (fa *FilestoreAdapter) Read(documentRef string) (interface{}, error) {
+	data := fa.getClient().Doc("Redirects/" + documentRef)
 
 	document, err := data.Get(fa.contextBackground)
 	if err != nil {
@@ -43,8 +43,8 @@ func (fa *FilestoreAdapter) Read(code string) (interface{}, error) {
 	return document.Data(), nil
 }
 
-func (fa *FilestoreAdapter) Write(code string, data interface{}) (interface{}, error) {
-	document := fa.getClient().Doc("Redirects/" + code)
+func (fa *FilestoreAdapter) Write(documentRef string, data interface{}) (interface{}, error) {
+	document := fa.getClient().Doc("Redirects/" + documentRef)
 
 	_, err := document.Set(fa.contextBackground, data)
 	if err != nil {
