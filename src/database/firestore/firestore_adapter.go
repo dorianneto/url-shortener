@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"cloud.google.com/go/firestore"
+	"github.com/dorianneto/url-shortener/src/database"
 )
 
 type FilestoreAdapter struct {
@@ -32,7 +33,7 @@ func (fa *FilestoreAdapter) Close() error {
 	return fa.getClient().Close()
 }
 
-func (fa *FilestoreAdapter) Read(documentRef string) (interface{}, error) {
+func (fa *FilestoreAdapter) Read(documentRef string) (*database.ReadDocumentOutput, error) {
 	data := fa.getClient().Doc("Redirects/" + documentRef)
 
 	document, err := data.Get(fa.contextBackground)
@@ -40,7 +41,7 @@ func (fa *FilestoreAdapter) Read(documentRef string) (interface{}, error) {
 		return nil, err
 	}
 
-	return document.Data(), nil
+	return &database.ReadDocumentOutput{Data: document.Data()}, nil
 }
 
 func (fa *FilestoreAdapter) Write(documentRef string, data interface{}) (interface{}, error) {

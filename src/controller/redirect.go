@@ -23,7 +23,9 @@ func (r *RedirectController) Index(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": data})
+	redirect := data.(*model.Redirect)
+
+	c.Redirect(http.StatusMovedPermanently, redirect.Url)
 }
 
 func (redirect *RedirectController) Store(c *gin.Context) {

@@ -15,7 +15,9 @@ func (rr *RedirectRepository) Find(code string) (interface{}, error) {
 		return nil, err
 	}
 
-	return result, nil
+	redirect := &model.Redirect{Url: result.Data["Url"].(string)}
+
+	return redirect, nil
 }
 
 func (rr *RedirectRepository) Create(data interface{}) (interface{}, error) {
