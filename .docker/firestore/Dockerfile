@@ -6,7 +6,7 @@ RUN gcloud components update && \
 
 COPY ./.docker/firestore/entrypoint.sh .
 
-ENV PORT 9000
+ENV PORT 8001
 EXPOSE "$PORT"
 
 ENTRYPOINT ["sh", "entrypoint.sh"]

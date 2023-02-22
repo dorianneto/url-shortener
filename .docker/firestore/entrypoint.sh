@@ -2,4 +2,4 @@
 
 set +xe
 
-gcloud emulators firestore start --host-port="127.0.0.1:${PORT}"
+gcloud emulators firestore start --host-port="0.0.0.0:${PORT}"
