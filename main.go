@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 
-	"github.com/dorianneto/url-shortener/src/controller"
+	controller "github.com/dorianneto/url-shortener/src/controller/redirect"
 	database "github.com/dorianneto/url-shortener/src/database/firestore"
-	"github.com/dorianneto/url-shortener/src/job"
+	job "github.com/dorianneto/url-shortener/src/job/redirect"
 	queue "github.com/dorianneto/url-shortener/src/queue/asynq"
-	"github.com/dorianneto/url-shortener/src/repository"
+	repository "github.com/dorianneto/url-shortener/src/repository/redirect"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )

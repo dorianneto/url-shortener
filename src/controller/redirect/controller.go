@@ -1,10 +1,10 @@
-package controller
+package redirect
 
 import (
 	"net/http"
 
-	"github.com/dorianneto/url-shortener/src/input"
-	"github.com/dorianneto/url-shortener/src/job"
+	"github.com/dorianneto/url-shortener/src/controller/redirect/input"
+	job "github.com/dorianneto/url-shortener/src/job/redirect"
 	"github.com/dorianneto/url-shortener/src/model"
 	"github.com/dorianneto/url-shortener/src/queue"
 	"github.com/dorianneto/url-shortener/src/repository"
@@ -29,7 +29,7 @@ func (r *RedirectController) Index(c *gin.Context) {
 }
 
 func (redirect *RedirectController) Store(c *gin.Context) {
-	var payload input.CreateUrlInput
+	var payload input.CreateRedirect
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err})

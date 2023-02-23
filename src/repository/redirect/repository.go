@@ -1,4 +1,4 @@
-package repository
+package redirect
 
 import (
 	"github.com/dorianneto/url-shortener/src/database"

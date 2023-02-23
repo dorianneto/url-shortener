@@ -1,4 +1,4 @@
-package job
+package redirect
 
 import (
 	"encoding/json"
