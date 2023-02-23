@@ -54,7 +54,7 @@ func (q *AsynqServerdapter) RunWorkers() {
 	mux := q.getMuxInstance()
 
 	for _, w := range q.workers {
-		queue, _ := w.Boot()
+		queue, _ := w.Loader()
 
 		mux.HandleFunc(queue, func(c context.Context, t *asynq.Task) error {
 			return w.Handler(t.Payload())

@@ -13,25 +13,25 @@ type AsynqClientAdapter struct {
 	client *asynq.Client
 }
 
-func (queue *AsynqClientAdapter) getInstance() *asynq.Client {
-	if queue.client == nil {
-		queue.client = asynq.NewClient(asynq.RedisClientOpt{Addr: os.Getenv("REDIS_ADDR")})
+func (q *AsynqClientAdapter) getInstance() *asynq.Client {
+	if q.client == nil {
+		q.client = asynq.NewClient(asynq.RedisClientOpt{Addr: os.Getenv("REDIS_ADDR")})
 	}
 
-	return queue.client
+	return q.client
 }
 
-func (queue *AsynqClientAdapter) Dispatch(job job.JobInterface) error {
-	typeName, data := job.Boot()
+func (q *AsynqClientAdapter) Dispatch(job job.JobInterface) error {
+	queue, data := job.Loader()
 
-	payload, err := json.Marshal(data)
+	dataEncoded, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	client := queue.getInstance()
+	client := q.getInstance()
 
-	result, err := client.Enqueue(asynq.NewTask(typeName, payload))
+	result, err := client.Enqueue(asynq.NewTask(queue, dataEncoded))
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,6 @@
 package job
 
 type JobInterface interface {
-	Boot() (string, interface{})
+	Loader() (string, interface{})
 	Handler(data interface{}) error
 }

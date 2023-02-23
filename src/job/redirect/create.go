@@ -17,7 +17,7 @@ func (j *CreateRedirectJob) queueName() string {
 	return "create:redirect"
 }
 
-func (j *CreateRedirectJob) Boot() (string, interface{}) {
+func (j *CreateRedirectJob) Loader() (string, interface{}) {
 	return j.queueName(), j.Payload
 }
 

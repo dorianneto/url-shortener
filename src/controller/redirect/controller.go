@@ -28,7 +28,7 @@ func (r *RedirectController) Index(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, redirect.Url)
 }
 
-func (redirect *RedirectController) Store(c *gin.Context) {
+func (r *RedirectController) Store(c *gin.Context) {
 	var payload input.CreateRedirect
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
@@ -42,7 +42,7 @@ func (redirect *RedirectController) Store(c *gin.Context) {
 		return
 	}
 
-	redirect.QueueClient.Dispatch(&job.CreateRedirectJob{Payload: data})
+	r.QueueClient.Dispatch(&job.CreateRedirectJob{Payload: data})
 
 	c.JSON(http.StatusCreated, gin.H{"data": data})
 }
