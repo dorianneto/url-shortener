@@ -7,25 +7,30 @@ import (
 	job "github.com/dorianneto/url-shortener/src/job/redirect"
 	"github.com/dorianneto/url-shortener/src/model"
 	"github.com/dorianneto/url-shortener/src/queue"
-	"github.com/dorianneto/url-shortener/src/repository"
+	repository "github.com/dorianneto/url-shortener/src/repository/redirect"
 	"github.com/gin-gonic/gin"
 )
 
 type RedirectController struct {
 	QueueClient queue.QueueClientInterface
-	Repository  repository.RepositoryInterface
+	Repository  repository.RedirectRepositoryInterface
 }
 
-func (r *RedirectController) Index(c *gin.Context) {
-	data, err := r.Repository.Find(c.Param("code"))
+func (r *RedirectController) Redirect(c *gin.Context) {
+	var query input.FindRedirect
+
+	if err := c.ShouldBindUri(&query); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	result, err := r.Repository.Find(query)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	redirect := data.(*model.Redirect)
-
-	c.Redirect(http.StatusMovedPermanently, redirect.Url)
+	c.Redirect(http.StatusMovedPermanently, result.Url)
 }
 
 func (r *RedirectController) Store(c *gin.Context) {

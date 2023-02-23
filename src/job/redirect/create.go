@@ -5,12 +5,12 @@ import (
 	"log"
 
 	"github.com/dorianneto/url-shortener/src/model"
-	"github.com/dorianneto/url-shortener/src/repository"
+	repository "github.com/dorianneto/url-shortener/src/repository/redirect"
 )
 
 type CreateRedirectJob struct {
 	Payload    *model.Redirect
-	Repository repository.RepositoryInterface
+	Repository repository.RedirectRepositoryInterface
 }
 
 func (j *CreateRedirectJob) queueName() string {
@@ -23,8 +23,8 @@ func (j *CreateRedirectJob) Loader() (string, interface{}) {
 
 func (j *CreateRedirectJob) Handler(data interface{}) error {
 	var (
-		err      error
 		redirect *model.Redirect
+		err      error
 	)
 
 	err = json.Unmarshal(data.([]byte), &redirect)
@@ -32,7 +32,7 @@ func (j *CreateRedirectJob) Handler(data interface{}) error {
 		return err
 	}
 
-	_, err = j.Repository.Create(redirect)
+	redirect, err = j.Repository.Create(redirect)
 	if err != nil {
 		return err
 	}

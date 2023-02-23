@@ -43,7 +43,7 @@ func main() {
 		Repository:  &redirectRepository,
 	}
 
-	router.GET("/:code", redirectController.Index)
+	router.GET("/:code", redirectController.Redirect)
 	router.POST("/", redirectController.Store)
 
 	router.Run(":8080")
