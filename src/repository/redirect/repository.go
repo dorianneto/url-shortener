@@ -17,7 +17,7 @@ func (rr *RedirectRepository) Find(query input.FindRedirect) (*model.Redirect, e
 	}
 
 	// TODO: narrow down access to properties externally
-	redirect := &model.Redirect{Url: result.Data["Url"].(string)}
+	redirect := &model.Redirect{Url: result.GetByKey("url")}
 
 	return redirect, nil
 }
