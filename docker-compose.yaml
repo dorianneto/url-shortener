@@ -5,8 +5,6 @@ services:
       context: .
       dockerfile: ./.docker/app/Dockerfile
     restart: always
-    environment:
-      - FIRESTORE_EMULATOR_HOST=firestore:8001
     ports:
       - 8080:8080
     volumes:
@@ -29,8 +27,26 @@ services:
     build:
       context: .
       dockerfile: ./.docker/firestore/Dockerfile
+    restart: always
     ports:
       - 8001:8001
+    networks:
+      - backend
+
+  couchbase:
+    build:
+      context: .
+      dockerfile: ./.docker/couchbase/Dockerfile
+    restart: always
+    ports:
+      - 8091-8097:8091-8097
+      - 9123:9123
+      - 11207:11207
+      - 11210:11210
+      - 11280:11280
+      - 18091-18097:18091-18097
+    volumes:
+      - ./.docker/couchbase/data:/opt/couchbase/var
     networks:
       - backend
 
