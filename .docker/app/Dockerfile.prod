@@ -1,0 +1,14 @@
+FROM golang:1.20
+
+ENV APP_ENV=prod
+
+WORKDIR /usr/src/app
+
+COPY . /usr/src/app
+
+RUN git config --global --add safe.directory /usr/src/app && \
+    go build -ldflags "-s -w" .
+
+EXPOSE 8080
+
+CMD ["./url-shortener"]

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	controller "github.com/dorianneto/url-shortener/src/controller/redirect"
 	database "github.com/dorianneto/url-shortener/src/database/firestore"
@@ -13,7 +14,7 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
+	err := godotenv.Load(".env." + os.Getenv("APP_ENV"))
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
