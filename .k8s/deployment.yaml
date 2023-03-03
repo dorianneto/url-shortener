@@ -15,5 +15,22 @@ spec:
       containers:
         - name: urlshortener
           image: dorianneto/url-shortener-app:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          env:
+            - name: APP_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: APP_PORT
+                  name: env-secret
+            - name: REDIS_ADDR
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_ADDR
+                  name: env-secret
+            - name: REDIS_CONCURRENCY
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_CONCURRENCY
+                  name: env-secret

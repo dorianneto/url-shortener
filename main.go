@@ -14,7 +14,13 @@ import (
 )
 
 func init() {
-	err := godotenv.Load(".env." + os.Getenv("APP_ENV"))
+	appEnv := os.Getenv("APP_ENV")
+
+	if appEnv == "prod" {
+		return
+	}
+
+	err := godotenv.Load(".env." + appEnv)
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

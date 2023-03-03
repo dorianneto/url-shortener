@@ -1,3 +1,4 @@
 /tmp/
 .env
 /.docker/couchbase/data
+/.k8s/env.yaml
