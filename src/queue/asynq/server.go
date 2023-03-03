@@ -57,7 +57,13 @@ func (q *AsynqServerdapter) RunWorkers() {
 		queue, _ := w.Loader()
 
 		mux.HandleFunc(queue, func(c context.Context, t *asynq.Task) error {
-			return w.Handler(t.Payload())
+			err := w.Handler(t.Payload())
+
+			if err != nil {
+				log.Println(err)
+			}
+
+			return err
 		})
 	}
 
