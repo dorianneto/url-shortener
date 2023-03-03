@@ -4,7 +4,7 @@ import (
 	"log"
 
 	controller "github.com/dorianneto/url-shortener/src/controller/redirect"
-	database "github.com/dorianneto/url-shortener/src/database/couchbase"
+	database "github.com/dorianneto/url-shortener/src/database/firestore"
 	job "github.com/dorianneto/url-shortener/src/job/redirect"
 	queue "github.com/dorianneto/url-shortener/src/queue/asynq"
 	repository "github.com/dorianneto/url-shortener/src/repository/redirect"
@@ -25,7 +25,7 @@ func main() {
 	queueClient := queue.AsynqClientAdapter{}
 	queueServer := queue.AsynqServerdapter{}
 
-	database := database.CouchbaseAdapter{}
+	database := database.FilestoreAdapter{}
 	redirectRepository := repository.RedirectRepository{
 		Database: &database,
 	}
