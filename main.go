@@ -32,7 +32,7 @@ func main() {
 	queueClient := queue.AsynqClientAdapter{}
 	queueServer := queue.AsynqServerdapter{}
 
-	database := database.FilestoreAdapter{}
+	database := database.FirestoreAdapter{}
 	redirectRepository := repository.RedirectRepository{
 		Database: &database,
 	}
