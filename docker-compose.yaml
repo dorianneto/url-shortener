@@ -7,6 +7,8 @@ services:
     restart: always
     ports:
       - 8080:8080
+    environment:
+      - APP_ENV=dev
     volumes:
       - .:/usr/src/app
     depends_on:

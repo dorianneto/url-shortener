@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: urlshortener-deployment
+spec:
+  selector:
+    matchLabels:
+      app: urlshortener
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: urlshortener
+    spec:
+      containers:
+        - name: urlshortener
+          image: dorianneto/url-shortener-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: APP_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: APP_PORT
+                  name: env-secret
+            - name: REDIS_ADDR
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_ADDR
+                  name: env-secret
+            - name: REDIS_CONCURRENCY
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_CONCURRENCY
+                  name: env-secret

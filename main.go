@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	controller "github.com/dorianneto/url-shortener/src/controller/redirect"
 	database "github.com/dorianneto/url-shortener/src/database/firestore"
@@ -13,7 +14,13 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
+	appEnv := os.Getenv("APP_ENV")
+
+	if appEnv == "prod" {
+		return
+	}
+
+	err := godotenv.Load(".env." + appEnv)
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -25,7 +32,7 @@ func main() {
 	queueClient := queue.AsynqClientAdapter{}
 	queueServer := queue.AsynqServerdapter{}
 
-	database := database.FilestoreAdapter{}
+	database := database.FirestoreAdapter{}
 	redirectRepository := repository.RedirectRepository{
 		Database: &database,
 	}

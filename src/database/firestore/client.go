@@ -3,23 +3,24 @@ package database
 import (
 	"context"
 	"log"
+	"os"
 
 	"cloud.google.com/go/firestore"
 	"github.com/dorianneto/url-shortener/src/database/output/document"
 )
 
-type FilestoreAdapter struct {
+type FirestoreAdapter struct {
 	client            *firestore.Client
 	contextBackground context.Context
 }
 
-func (fa *FilestoreAdapter) getClient() *firestore.Client {
+func (fa *FirestoreAdapter) getClient() *firestore.Client {
 	if fa.client != nil {
 		return fa.client
 	}
 
 	fa.contextBackground = context.Background()
-	client, err := firestore.NewClient(fa.contextBackground, "dumb-project-id")
+	client, err := firestore.NewClient(fa.contextBackground, os.Getenv("FIRESTORE_PROJECT_ID"))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -29,11 +30,11 @@ func (fa *FilestoreAdapter) getClient() *firestore.Client {
 	return fa.client
 }
 
-func (fa *FilestoreAdapter) Close() error {
+func (fa *FirestoreAdapter) Close() error {
 	return fa.getClient().Close()
 }
 
-func (fa *FilestoreAdapter) Read(documentRef string) (*document.ReadOutput, error) {
+func (fa *FirestoreAdapter) Read(documentRef string) (*document.ReadOutput, error) {
 	data := fa.getClient().Doc("Redirects/" + documentRef)
 
 	result, err := data.Get(fa.contextBackground)
@@ -44,7 +45,7 @@ func (fa *FilestoreAdapter) Read(documentRef string) (*document.ReadOutput, erro
 	return &document.ReadOutput{Data: result.Data()}, nil
 }
 
-func (fa *FilestoreAdapter) Write(documentRef string, data interface{}) (interface{}, error) {
+func (fa *FirestoreAdapter) Write(documentRef string, data interface{}) (interface{}, error) {
 	document := fa.getClient().Doc("Redirects/" + documentRef)
 
 	_, err := document.Set(fa.contextBackground, data)
