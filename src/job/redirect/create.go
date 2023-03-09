@@ -21,13 +21,13 @@ func (j *CreateRedirectJob) Loader() (string, interface{}) {
 	return j.queueName(), j.Payload
 }
 
-func (j *CreateRedirectJob) Handler(data interface{}) error {
+func (j *CreateRedirectJob) Handler(data []byte) error {
 	var (
 		redirect *model.Redirect
 		err      error
 	)
 
-	err = json.Unmarshal(data.([]byte), &redirect)
+	err = json.Unmarshal(data, &redirect)
 	if err != nil {
 		return err
 	}
