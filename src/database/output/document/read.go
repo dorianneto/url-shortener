@@ -10,8 +10,8 @@ type ReadOutput struct {
 func (r *ReadOutput) GetByKey(key string) string {
 	var result string
 
-	for k, _ := range r.Data {
-		if found := strings.EqualFold(key, k); found == true {
+	for k := range r.Data {
+		if found := strings.EqualFold(key, k); found {
 			result = k
 			break
 		}
