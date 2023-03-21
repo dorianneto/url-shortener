@@ -16,7 +16,7 @@ type Redirect struct {
 }
 
 func (redirect *Redirect) isValid() error {
-	validate := validator.ValidatorAdapter{}
+	validate := validator.New()
 	err := validate.Struct(redirect)
 
 	if err != nil {

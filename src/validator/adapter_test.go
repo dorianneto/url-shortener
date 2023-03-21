@@ -10,7 +10,7 @@ type sample struct {
 }
 
 func TestStructValidation(t *testing.T) {
-	v := &ValidatorAdapter{}
+	v := New()
 
 	got := v.Struct(&sample{
 		Foo: "lorem ipsum",

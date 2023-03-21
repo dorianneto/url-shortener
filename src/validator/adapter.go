@@ -4,11 +4,15 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type ValidatorAdapter struct {
+type ValidatorInterface interface {
+	Struct(input interface{}) error
+}
+
+type validatorAdapter struct {
 	instance *validator.Validate
 }
 
-func (v *ValidatorAdapter) getInstance() *validator.Validate {
+func (v *validatorAdapter) getInstance() *validator.Validate {
 	if v.instance == nil {
 		v.instance = validator.New()
 	}
@@ -16,6 +20,10 @@ func (v *ValidatorAdapter) getInstance() *validator.Validate {
 	return v.instance
 }
 
-func (v *ValidatorAdapter) Struct(s interface{}) error {
+func (v *validatorAdapter) Struct(s interface{}) error {
 	return v.getInstance().Struct(s)
+}
+
+func New() ValidatorInterface {
+	return &validatorAdapter{}
 }
