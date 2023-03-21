@@ -31,6 +31,7 @@ func (r *RedirectController) Redirect(c *gin.Context) {
 	}
 
 	c.Redirect(http.StatusMovedPermanently, result.Url)
+	c.Abort()
 }
 
 func (r *RedirectController) Store(c *gin.Context) {
