@@ -2,6 +2,7 @@ package redirect
 
 import (
 	"bytes"
+	"errors"
 	"net/http/httptest"
 	"testing"
 
@@ -56,5 +57,59 @@ func TestRedirect(t *testing.T) {
 
 	if gotLocation != wantLocation {
 		t.Errorf("Expected '%s', but got '%s'", wantLocation, gotLocation)
+	}
+}
+
+func TestRedirectWhenInputIsEmpty(t *testing.T) {
+	controller := &RedirectController{QueueClient: &QueueMock{}, Repository: &RepositoryMock{}}
+
+	request := httptest.NewRecorder()
+	context, _ := gin.CreateTestContext(request)
+	context.Request = httptest.NewRequest("GET", "/foo", new(bytes.Buffer))
+	context.Params = append(context.Params, gin.Param{Key: "code", Value: ""})
+
+	controller.Redirect(context)
+
+	gotStatus := context.Writer.Status()
+	wantStatus := 400
+
+	if gotStatus != wantStatus {
+		t.Errorf("Expected '%d', but got '%d'", wantStatus, gotStatus)
+	}
+
+	gotErrorMessage := request.Body.String()
+	wantErrorMessage := `{"message":"Key: 'FindRedirect.Code' Error:Field validation for 'Code' failed on the 'required' tag"}`
+
+	if gotErrorMessage != wantErrorMessage {
+		t.Errorf("Expected '%s', but got '%s'", wantErrorMessage, gotErrorMessage)
+	}
+}
+
+func TestRedirectWhenDataIsNotFoundInDatabase(t *testing.T) {
+	findFn = func(query input.FindRedirect) (*model.Redirect, error) {
+		return nil, errors.New("something goes wrong")
+	}
+
+	controller := &RedirectController{QueueClient: &QueueMock{}, Repository: &RepositoryMock{}}
+
+	request := httptest.NewRecorder()
+	context, _ := gin.CreateTestContext(request)
+	context.Request = httptest.NewRequest("GET", "/foo", new(bytes.Buffer))
+	context.Params = append(context.Params, gin.Param{Key: "code", Value: "000000"})
+
+	controller.Redirect(context)
+
+	gotStatus := context.Writer.Status()
+	wantStatus := 400
+
+	if gotStatus != wantStatus {
+		t.Errorf("Expected '%d', but got '%d'", wantStatus, gotStatus)
+	}
+
+	gotErrorMessage := request.Body.String()
+	wantErrorMessage := `{"message":"something goes wrong"}`
+
+	if gotErrorMessage != wantErrorMessage {
+		t.Errorf("Expected '%s', but got '%s'", wantErrorMessage, gotErrorMessage)
 	}
 }
