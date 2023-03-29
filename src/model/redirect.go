@@ -10,7 +10,7 @@ import (
 
 type Redirect struct {
 	ID        string    `json:"id"`
-	Url       string    `json:"url" validate:"required"`
+	Url       string    `json:"url" validate:"required,url"`
 	Code      string    `json:"code" validate:"required"`
 	CreatedAt time.Time `json:"created_at"`
 }
