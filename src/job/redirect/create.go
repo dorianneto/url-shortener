@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/dorianneto/url-shortener/src/model"
-	repository "github.com/dorianneto/url-shortener/src/repository/redirect"
+	"github.com/dorianneto/url-shortener/src/repository"
 )
 
 type CreateRedirectJob struct {

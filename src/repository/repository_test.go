@@ -1,4 +1,4 @@
-package redirect
+package repository
 
 import (
 	"errors"
@@ -30,9 +30,7 @@ func (d *DatabaseMock) Write(documentRef string, data interface{}) (interface{},
 }
 
 func TestFind(t *testing.T) {
-	r := RedirectRepository{
-		Database: &DatabaseMock{},
-	}
+	r := NewRepository(&DatabaseMock{})
 
 	input := input.FindRedirect{Code: "xxxxxx"}
 
@@ -49,9 +47,7 @@ func TestFindWhenDataIsNotFound(t *testing.T) {
 		return nil, errors.New("something goes wrong")
 	}
 
-	r := RedirectRepository{
-		Database: &DatabaseMock{},
-	}
+	r := NewRepository(&DatabaseMock{})
 
 	input := input.FindRedirect{Code: "xxxxxx"}
 
@@ -64,9 +60,7 @@ func TestFindWhenDataIsNotFound(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	r := RedirectRepository{
-		Database: &DatabaseMock{},
-	}
+	r := NewRepository(&DatabaseMock{})
 
 	got, _ := r.Create(&model.Redirect{Code: "999999"})
 	want := &model.Redirect{Code: "999999"}
@@ -81,9 +75,7 @@ func TestCreateWhenCannotSaveIntoDatabase(t *testing.T) {
 		return nil, errors.New("something goes wrong")
 	}
 
-	r := RedirectRepository{
-		Database: &DatabaseMock{},
-	}
+	r := NewRepository(&DatabaseMock{})
 
 	_, got := r.Create(&model.Redirect{Code: "999999"})
 	want := errors.New("something goes wrong")

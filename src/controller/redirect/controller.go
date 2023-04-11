@@ -7,7 +7,7 @@ import (
 	job "github.com/dorianneto/url-shortener/src/job/redirect"
 	"github.com/dorianneto/url-shortener/src/model"
 	"github.com/dorianneto/url-shortener/src/queue"
-	repository "github.com/dorianneto/url-shortener/src/repository/redirect"
+	"github.com/dorianneto/url-shortener/src/repository"
 	"github.com/gin-gonic/gin"
 )
 
