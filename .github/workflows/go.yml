@@ -28,11 +28,6 @@ jobs:
           echo ${GOPATH}
           echo ${GOROOT}
 
-      - name: Build
-        run: go build -v ./...
-        env:
-          GOPATH: /home/runner/work/url-shortener/url-shortener
-
       - name: Test
         run: go test -v ./...
         env:
