@@ -14,7 +14,7 @@ import (
 type AsynqServerdapter struct {
 	server  *asynq.Server
 	mux     *asynq.ServeMux
-	workers []job.JobInterface
+	workers []job.BaseJobInterface
 }
 
 func (q *AsynqServerdapter) getServerInstance() (*asynq.Server, error) {
@@ -41,7 +41,7 @@ func (q *AsynqServerdapter) getMuxInstance() *asynq.ServeMux {
 	return q.mux
 }
 
-func (q *AsynqServerdapter) RegisterWorker(handler job.JobInterface) {
+func (q *AsynqServerdapter) RegisterWorker(handler job.BaseJobInterface) {
 	q.workers = append(q.workers, handler)
 }
 

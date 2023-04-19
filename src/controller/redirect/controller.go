@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/dorianneto/url-shortener/src/controller/redirect/input"
-	job "github.com/dorianneto/url-shortener/src/job/redirect"
+	"github.com/dorianneto/url-shortener/src/job"
 	"github.com/dorianneto/url-shortener/src/model"
 	"github.com/dorianneto/url-shortener/src/queue"
 	"github.com/dorianneto/url-shortener/src/repository"
@@ -14,6 +14,7 @@ import (
 type RedirectController struct {
 	QueueClient queue.QueueClientInterface
 	Repository  repository.RedirectRepositoryInterface
+	Job         job.CreateRedirectJobInterface
 }
 
 func (r *RedirectController) Redirect(c *gin.Context) {
@@ -48,7 +49,8 @@ func (r *RedirectController) Store(c *gin.Context) {
 		return
 	}
 
-	r.QueueClient.Dispatch(&job.CreateRedirectJob{Payload: data})
+	r.Job.LoadPayload(data)
+	r.QueueClient.Dispatch(r.Job)
 
 	c.JSON(http.StatusCreated, gin.H{"data": data})
 }

@@ -1,4 +1,4 @@
-package redirect
+package job
 
 import (
 	"errors"
@@ -25,9 +25,8 @@ func (rrm *RedirectRepositoryMock) Create(redirect *model.Redirect) (*model.Redi
 func TestLoader(t *testing.T) {
 	r, _ := model.NewRedirect("https://example.com")
 
-	job := &CreateRedirectJob{
-		Payload: r,
-	}
+	job := NewCreateRedirectJob(&RedirectRepositoryMock{})
+	job.LoadPayload(r)
 	gotQueueName, gotPayload := job.Loader()
 
 	want := []interface{}{
@@ -45,11 +44,11 @@ func TestLoader(t *testing.T) {
 }
 
 func TestHandler(t *testing.T) {
+	r, _ := model.NewRedirect("https://example.com")
 	data := []byte(`{"id":"9961c85e-d805-4a96-bbdb-7ab35ef67ca8","url":"https://example.com","code":"PkevciZPWVHk","created_at":"0001-01-01T00:00:00Z"}`)
 
-	job := &CreateRedirectJob{
-		Repository: &RedirectRepositoryMock{},
-	}
+	job := NewCreateRedirectJob(&RedirectRepositoryMock{})
+	job.LoadPayload(r)
 	got := job.Handler(data)
 
 	var want error
@@ -60,11 +59,11 @@ func TestHandler(t *testing.T) {
 }
 
 func TestHandlerWhenPayloadIsNotWellFormed(t *testing.T) {
+	r, _ := model.NewRedirect("https://example.com")
 	data := []byte(`{"id":10,"url":"https://example.com","code":"PkevciZPWVHk","created_at":"0001-01-01T00:00:00Z"}`)
 
-	job := &CreateRedirectJob{
-		Repository: &RedirectRepositoryMock{},
-	}
+	job := NewCreateRedirectJob(&RedirectRepositoryMock{})
+	job.LoadPayload(r)
 	got := job.Handler(data)
 
 	var want error
@@ -79,11 +78,11 @@ func TestHandlerWhenRepositoryGoesWrong(t *testing.T) {
 		return nil, errors.New("")
 	}
 
+	r, _ := model.NewRedirect("https://example.com")
 	data := []byte(`{"id":"9961c85e-d805-4a96-bbdb-7ab35ef67ca8","url":"https://example.com","code":"PkevciZPWVHk","created_at":"0001-01-01T00:00:00Z"}`)
 
-	job := &CreateRedirectJob{
-		Repository: &RedirectRepositoryMock{},
-	}
+	job := NewCreateRedirectJob(&RedirectRepositoryMock{})
+	job.LoadPayload(r)
 	got := job.Handler(data)
 
 	var want error

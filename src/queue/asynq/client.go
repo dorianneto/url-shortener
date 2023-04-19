@@ -21,7 +21,7 @@ func (q *AsynqClientAdapter) getInstance() *asynq.Client {
 	return q.client
 }
 
-func (q *AsynqClientAdapter) Dispatch(job job.JobInterface) error {
+func (q *AsynqClientAdapter) Dispatch(job job.BaseJobInterface) error {
 	queue, data := job.Loader()
 
 	dataEncoded, err := json.Marshal(data)

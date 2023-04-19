@@ -19,7 +19,7 @@ const (
 
 type QueueMock struct{}
 
-func (q *QueueMock) Dispatch(job job.JobInterface) error {
+func (q *QueueMock) Dispatch(job job.BaseJobInterface) error {
 	return nil
 }
 
@@ -41,8 +41,24 @@ func (rm *RepositoryMock) Create(redirect *model.Redirect) (*model.Redirect, err
 	return createFn(redirect)
 }
 
+type JobMock struct{}
+
+func (jm *JobMock) LoadPayload(payload interface{}) {}
+
+func (jm *JobMock) Loader() (string, interface{}) {
+	return "foo", nil
+}
+
+func (jm *JobMock) Handler(data []byte) error {
+	return nil
+}
+
 func TestRedirect(t *testing.T) {
-	controller := &RedirectController{QueueClient: &QueueMock{}, Repository: &RepositoryMock{}}
+	controller := &RedirectController{
+		QueueClient: &QueueMock{},
+		Repository:  &RepositoryMock{},
+		Job:         &JobMock{},
+	}
 
 	context, _ := gin.CreateTestContext(httptest.NewRecorder())
 	context.Request = httptest.NewRequest("GET", "/foo", new(bytes.Buffer))
@@ -66,7 +82,11 @@ func TestRedirect(t *testing.T) {
 }
 
 func TestRedirectWhenInputIsEmpty(t *testing.T) {
-	controller := &RedirectController{QueueClient: &QueueMock{}, Repository: &RepositoryMock{}}
+	controller := &RedirectController{
+		QueueClient: &QueueMock{},
+		Repository:  &RepositoryMock{},
+		Job:         &JobMock{},
+	}
 
 	request := httptest.NewRecorder()
 	context, _ := gin.CreateTestContext(request)
@@ -95,7 +115,11 @@ func TestRedirectWhenDataIsNotFoundInDatabase(t *testing.T) {
 		return nil, errors.New("something goes wrong")
 	}
 
-	controller := &RedirectController{QueueClient: &QueueMock{}, Repository: &RepositoryMock{}}
+	controller := &RedirectController{
+		QueueClient: &QueueMock{},
+		Repository:  &RepositoryMock{},
+		Job:         &JobMock{},
+	}
 
 	request := httptest.NewRecorder()
 	context, _ := gin.CreateTestContext(request)
@@ -120,7 +144,11 @@ func TestRedirectWhenDataIsNotFoundInDatabase(t *testing.T) {
 }
 
 func TestStore(t *testing.T) {
-	controller := &RedirectController{QueueClient: &QueueMock{}, Repository: &RepositoryMock{}}
+	controller := &RedirectController{
+		QueueClient: &QueueMock{},
+		Repository:  &RepositoryMock{},
+		Job:         &JobMock{},
+	}
 
 	request := httptest.NewRecorder()
 	context, _ := gin.CreateTestContext(request)
@@ -137,7 +165,11 @@ func TestStore(t *testing.T) {
 }
 
 func TestStoreWhenPayloadIsEmpty(t *testing.T) {
-	controller := &RedirectController{QueueClient: &QueueMock{}, Repository: &RepositoryMock{}}
+	controller := &RedirectController{
+		QueueClient: &QueueMock{},
+		Repository:  &RepositoryMock{},
+		Job:         &JobMock{},
+	}
 
 	request := httptest.NewRecorder()
 	context, _ := gin.CreateTestContext(request)
@@ -154,7 +186,11 @@ func TestStoreWhenPayloadIsEmpty(t *testing.T) {
 }
 
 func TestStoreWhenModelCannotBeCreated(t *testing.T) {
-	controller := &RedirectController{QueueClient: &QueueMock{}, Repository: &RepositoryMock{}}
+	controller := &RedirectController{
+		QueueClient: &QueueMock{},
+		Repository:  &RepositoryMock{},
+		Job:         &JobMock{},
+	}
 
 	request := httptest.NewRecorder()
 	context, _ := gin.CreateTestContext(request)

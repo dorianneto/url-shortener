@@ -6,7 +6,7 @@ import (
 
 	controller "github.com/dorianneto/url-shortener/src/controller/redirect"
 	database "github.com/dorianneto/url-shortener/src/database/firestore"
-	job "github.com/dorianneto/url-shortener/src/job/redirect"
+	"github.com/dorianneto/url-shortener/src/job"
 	queue "github.com/dorianneto/url-shortener/src/queue/asynq"
 	"github.com/dorianneto/url-shortener/src/repository"
 	"github.com/gin-gonic/gin"
@@ -37,15 +37,16 @@ func main() {
 
 	defer database.Close()
 
-	queueServer.RegisterWorker(&job.CreateRedirectJob{
-		Repository: repository,
-	})
+	job := job.NewCreateRedirectJob(repository)
+
+	queueServer.RegisterWorker(job)
 
 	go queueServer.RunWorkers()
 
 	redirectController := controller.RedirectController{
 		QueueClient: &queueClient,
 		Repository:  repository,
+		Job:         job,
 	}
 
 	router.GET("/:code", redirectController.Redirect)
