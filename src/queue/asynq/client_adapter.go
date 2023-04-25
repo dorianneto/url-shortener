@@ -1,4 +1,4 @@
-package queue
+package asynq
 
 import (
 	"log"
@@ -9,11 +9,15 @@ import (
 	"github.com/hibiken/asynq"
 )
 
-type AsynqClientAdapter struct {
+type asynqClientAdapter struct {
 	client *asynq.Client
 }
 
-func (q *AsynqClientAdapter) getInstance() *asynq.Client {
+func NewAsynqClientAdapter() *asynqClientAdapter {
+	return &asynqClientAdapter{}
+}
+
+func (q *asynqClientAdapter) getInstance() *asynq.Client {
 	if q.client == nil {
 		q.client = asynq.NewClient(asynq.RedisClientOpt{Addr: os.Getenv("REDIS_ADDR")})
 	}
@@ -21,7 +25,7 @@ func (q *AsynqClientAdapter) getInstance() *asynq.Client {
 	return q.client
 }
 
-func (q *AsynqClientAdapter) Dispatch(job job.BaseJobInterface) error {
+func (q *asynqClientAdapter) Dispatch(job job.BaseJobInterface) error {
 	queue, data := job.Loader()
 
 	dataEncoded, err := json.Marshal(data)

@@ -7,7 +7,7 @@ import (
 	controller "github.com/dorianneto/url-shortener/src/controller/redirect"
 	database "github.com/dorianneto/url-shortener/src/database/firestore"
 	"github.com/dorianneto/url-shortener/src/job"
-	queue "github.com/dorianneto/url-shortener/src/queue/asynq"
+	"github.com/dorianneto/url-shortener/src/queue/asynq"
 	"github.com/dorianneto/url-shortener/src/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -29,8 +29,8 @@ func init() {
 func main() {
 	router := gin.Default()
 
-	queueClient := queue.AsynqClientAdapter{}
-	queueServer := queue.AsynqServerdapter{}
+	queueClient := asynq.NewAsynqClientAdapter()
+	queueServer := asynq.NewAsynqServerdapter()
 
 	database := database.FirestoreAdapter{}
 	repository := repository.NewRepository(&database)
@@ -44,7 +44,7 @@ func main() {
 	go queueServer.RunWorkers()
 
 	redirectController := controller.RedirectController{
-		QueueClient: &queueClient,
+		QueueClient: queueClient,
 		Repository:  repository,
 		Job:         job,
 	}

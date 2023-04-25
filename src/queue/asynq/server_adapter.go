@@ -1,4 +1,4 @@
-package queue
+package asynq
 
 import (
 	"context"
@@ -11,13 +11,17 @@ import (
 	"github.com/hibiken/asynq"
 )
 
-type AsynqServerdapter struct {
+type asynqServerdapter struct {
 	server  *asynq.Server
 	mux     *asynq.ServeMux
 	workers []job.BaseJobInterface
 }
 
-func (q *AsynqServerdapter) getServerInstance() (*asynq.Server, error) {
+func NewAsynqServerdapter() *asynqServerdapter {
+	return &asynqServerdapter{}
+}
+
+func (q *asynqServerdapter) getServerInstance() (*asynq.Server, error) {
 	if q.server == nil {
 		concurrency, err := strconv.Atoi(os.Getenv("REDIS_CONCURRENCY"))
 		if err != nil {
@@ -33,7 +37,7 @@ func (q *AsynqServerdapter) getServerInstance() (*asynq.Server, error) {
 	return q.server, nil
 }
 
-func (q *AsynqServerdapter) getMuxInstance() *asynq.ServeMux {
+func (q *asynqServerdapter) getMuxInstance() *asynq.ServeMux {
 	if q.mux == nil {
 		q.mux = asynq.NewServeMux()
 	}
@@ -41,11 +45,11 @@ func (q *AsynqServerdapter) getMuxInstance() *asynq.ServeMux {
 	return q.mux
 }
 
-func (q *AsynqServerdapter) RegisterWorker(handler job.BaseJobInterface) {
+func (q *asynqServerdapter) RegisterWorker(handler job.BaseJobInterface) {
 	q.workers = append(q.workers, handler)
 }
 
-func (q *AsynqServerdapter) RunWorkers() {
+func (q *asynqServerdapter) RunWorkers() {
 	server, err := q.getServerInstance()
 	if err != nil {
 		log.Fatal(err)
