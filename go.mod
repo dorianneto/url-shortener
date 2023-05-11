@@ -7,7 +7,6 @@ require (
 	github.com/couchbase/gocb/v2 v2.6.1
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-playground/validator/v10 v10.11.2
-	github.com/goccy/go-json v0.10.0
 	github.com/hibiken/asynq v0.24.0
 	github.com/joho/godotenv v1.5.1
 	github.com/satori/go.uuid v1.2.0
@@ -25,6 +24,7 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
+	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect

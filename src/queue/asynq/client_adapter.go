@@ -1,23 +1,27 @@
 package asynq
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 
 	"github.com/dorianneto/url-shortener/src/job"
-	"github.com/goccy/go-json"
 	"github.com/hibiken/asynq"
 )
 
+type asynqClientAdapterInterface interface {
+	Enqueue(task *asynq.Task, opts ...asynq.Option) (*asynq.TaskInfo, error)
+}
+
 type asynqClientAdapter struct {
-	client *asynq.Client
+	client asynqClientAdapterInterface
 }
 
 func NewAsynqClientAdapter() *asynqClientAdapter {
 	return &asynqClientAdapter{}
 }
 
-func (q *asynqClientAdapter) getInstance() *asynq.Client {
+func (q *asynqClientAdapter) getInstance() asynqClientAdapterInterface {
 	if q.client == nil {
 		q.client = asynq.NewClient(asynq.RedisClientOpt{Addr: os.Getenv("REDIS_ADDR")})
 	}
