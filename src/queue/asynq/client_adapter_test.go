@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/dorianneto/url-shortener/src/job/jobtest"
 	"github.com/hibiken/asynq"
 )
 
@@ -19,26 +20,9 @@ func (cm *clientMock) Enqueue(task *asynq.Task, opts ...asynq.Option) (*asynq.Ta
 	return enqueueFn(task, opts...)
 }
 
-type jobMock struct{}
-
-var loaderFnDefaultValue = func() (string, interface{}) {
-	return "foo", map[string]int{"foo": 1, "bar": 2, "baz": 3}
-}
-var loaderFn = loaderFnDefaultValue
-
-func (j *jobMock) LoadPayload(payload interface{}) {}
-
-func (j *jobMock) Loader() (string, interface{}) {
-	return loaderFn()
-}
-
-func (j *jobMock) Handler(data []byte) error {
-	return nil
-}
-
-func resetMocks() {
+func resetClientMocks() {
 	enqueueFn = enqueueFnDefaultValue
-	loaderFn = loaderFnDefaultValue
+	jobtest.LoaderFn = jobtest.LoaderFnDefaultValue
 }
 
 func TestDispatch(t *testing.T) {
@@ -47,7 +31,7 @@ func TestDispatch(t *testing.T) {
 
 	var want error
 
-	got := c.Dispatch(&jobMock{})
+	got := c.Dispatch(&jobtest.JobMock{})
 
 	if got != want {
 		t.Errorf("Expected '%v', but got '%v'", want, got)
@@ -59,19 +43,19 @@ func TestDispatchWhenClientInstanceIsNil(t *testing.T) {
 	c := NewAsynqClientAdapter()
 	c.client = nil
 
-	c.Dispatch(&jobMock{})
+	c.Dispatch(&jobtest.JobMock{})
 }
 
 func TestFailToDispatchWhenInputCannotBeEncoded(t *testing.T) {
-	defer t.Cleanup(resetMocks)
+	defer t.Cleanup(resetClientMocks)
 
 	c := NewAsynqClientAdapter()
 	c.client = &clientMock{}
 
-	loaderFn = func() (string, interface{}) {
+	jobtest.LoaderFn = func() (string, interface{}) {
 		return "foo", make(chan int)
 	}
-	job := &jobMock{}
+	job := &jobtest.JobMock{}
 
 	got := c.Dispatch(job)
 
@@ -83,7 +67,7 @@ func TestFailToDispatchWhenInputCannotBeEncoded(t *testing.T) {
 }
 
 func TestFailToDispatchWhenClientCannotEnqueue(t *testing.T) {
-	defer t.Cleanup(resetMocks)
+	defer t.Cleanup(resetClientMocks)
 
 	enqueueFn = func(task *asynq.Task, opts ...asynq.Option) (*asynq.TaskInfo, error) {
 		return nil, fmt.Errorf("task cannot be nil")
@@ -92,7 +76,7 @@ func TestFailToDispatchWhenClientCannotEnqueue(t *testing.T) {
 	c := NewAsynqClientAdapter()
 	c.client = &clientMock{}
 
-	got := c.Dispatch(&jobMock{})
+	got := c.Dispatch(&jobtest.JobMock{})
 
 	want := fmt.Errorf("task cannot be nil")
 

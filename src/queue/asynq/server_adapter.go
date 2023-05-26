@@ -11,9 +11,19 @@ import (
 	"github.com/hibiken/asynq"
 )
 
+type asynqServerAdapterInterface interface {
+	Run(handler asynq.Handler) error
+	Shutdown()
+}
+
+type asynqServerMuxAdapterInterface interface {
+	HandleFunc(pattern string, handler func(context.Context, *asynq.Task) error)
+	ProcessTask(context.Context, *asynq.Task) error
+}
+
 type asynqServerdapter struct {
-	server  *asynq.Server
-	mux     *asynq.ServeMux
+	server  asynqServerAdapterInterface
+	mux     asynqServerMuxAdapterInterface
 	workers []job.BaseJobInterface
 }
 
@@ -21,7 +31,7 @@ func NewAsynqServerdapter() *asynqServerdapter {
 	return &asynqServerdapter{}
 }
 
-func (q *asynqServerdapter) getServerInstance() (*asynq.Server, error) {
+func (q *asynqServerdapter) getServerInstance() (asynqServerAdapterInterface, error) {
 	if q.server == nil {
 		concurrency, err := strconv.Atoi(os.Getenv("REDIS_CONCURRENCY"))
 		if err != nil {
@@ -37,7 +47,7 @@ func (q *asynqServerdapter) getServerInstance() (*asynq.Server, error) {
 	return q.server, nil
 }
 
-func (q *asynqServerdapter) getMuxInstance() *asynq.ServeMux {
+func (q *asynqServerdapter) getMuxInstance() asynqServerMuxAdapterInterface {
 	if q.mux == nil {
 		q.mux = asynq.NewServeMux()
 	}
@@ -52,7 +62,8 @@ func (q *asynqServerdapter) RegisterWorker(handler job.BaseJobInterface) {
 func (q *asynqServerdapter) RunWorkers() {
 	server, err := q.getServerInstance()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	mux := q.getMuxInstance()
@@ -73,8 +84,9 @@ func (q *asynqServerdapter) RunWorkers() {
 
 	log.Println("Redis server running...")
 
-	if err := server.Run(mux); err != nil {
+	if err := server.Run(mux.(asynq.Handler)); err != nil {
 		server.Shutdown()
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }
