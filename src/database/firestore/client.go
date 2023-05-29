@@ -1,4 +1,4 @@
-package database
+package firestore
 
 import (
 	"context"
@@ -9,12 +9,16 @@ import (
 	"github.com/dorianneto/url-shortener/src/database/output/document"
 )
 
-type FirestoreAdapter struct {
+type firestoreAdapter struct {
 	client            *firestore.Client
 	contextBackground context.Context
 }
 
-func (fa *FirestoreAdapter) getClient() *firestore.Client {
+func NewFirestoreAdapter() *firestoreAdapter {
+	return &firestoreAdapter{}
+}
+
+func (fa *firestoreAdapter) getClient() *firestore.Client {
 	if fa.client != nil {
 		return fa.client
 	}
@@ -30,11 +34,11 @@ func (fa *FirestoreAdapter) getClient() *firestore.Client {
 	return fa.client
 }
 
-func (fa *FirestoreAdapter) Close() error {
+func (fa *firestoreAdapter) Close() error {
 	return fa.getClient().Close()
 }
 
-func (fa *FirestoreAdapter) Read(documentRef string) (*document.ReadOutput, error) {
+func (fa *firestoreAdapter) Read(documentRef string) (*document.ReadOutput, error) {
 	data := fa.getClient().Doc("Redirects/" + documentRef)
 
 	result, err := data.Get(fa.contextBackground)
@@ -45,7 +49,7 @@ func (fa *FirestoreAdapter) Read(documentRef string) (*document.ReadOutput, erro
 	return &document.ReadOutput{Data: result.Data()}, nil
 }
 
-func (fa *FirestoreAdapter) Write(documentRef string, data interface{}) (interface{}, error) {
+func (fa *firestoreAdapter) Write(documentRef string, data interface{}) (interface{}, error) {
 	document := fa.getClient().Doc("Redirects/" + documentRef)
 
 	_, err := document.Set(fa.contextBackground, data)

@@ -5,7 +5,7 @@ import (
 	"os"
 
 	controller "github.com/dorianneto/url-shortener/src/controller/redirect"
-	database "github.com/dorianneto/url-shortener/src/database/firestore"
+	"github.com/dorianneto/url-shortener/src/database/firestore"
 	"github.com/dorianneto/url-shortener/src/job"
 	"github.com/dorianneto/url-shortener/src/queue/asynq"
 	"github.com/dorianneto/url-shortener/src/repository"
@@ -32,8 +32,8 @@ func main() {
 	queueClient := asynq.NewAsynqClientAdapter()
 	queueServer := asynq.NewAsynqServerdapter()
 
-	database := database.FirestoreAdapter{}
-	repository := repository.NewRepository(&database)
+	database := firestore.NewFirestoreAdapter()
+	repository := repository.NewRepository(database)
 
 	defer database.Close()
 
