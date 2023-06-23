@@ -9,8 +9,30 @@ import (
 	"github.com/dorianneto/url-shortener/src/database/output/document"
 )
 
+type documentAdapterInterface interface {
+	Get(ctx context.Context) (_ *firestore.DocumentSnapshot, err error)
+	Set(ctx context.Context, data interface{}, opts ...firestore.SetOption) (_ *firestore.WriteResult, err error)
+}
+
+type FirestoreClientAdapterInterface interface {
+	Doc(path string) documentAdapterInterface
+	Close() error
+}
+
+type firestoreClientAdapter struct {
+	client *firestore.Client
+}
+
+func (fca *firestoreClientAdapter) Close() error {
+	return fca.client.Close()
+}
+
+func (fca *firestoreClientAdapter) Doc(path string) documentAdapterInterface {
+	return fca.client.Doc(path)
+}
+
 type firestoreAdapter struct {
-	client            *firestore.Client
+	client            FirestoreClientAdapterInterface
 	contextBackground context.Context
 }
 
@@ -18,7 +40,7 @@ func NewFirestoreAdapter() *firestoreAdapter {
 	return &firestoreAdapter{}
 }
 
-func (fa *firestoreAdapter) getClient() *firestore.Client {
+func (fa *firestoreAdapter) getClient() FirestoreClientAdapterInterface {
 	if fa.client != nil {
 		return fa.client
 	}
@@ -29,7 +51,9 @@ func (fa *firestoreAdapter) getClient() *firestore.Client {
 		log.Fatalln(err)
 	}
 
-	fa.client = client
+	fa.client = &firestoreClientAdapter{
+		client: client,
+	}
 
 	return fa.client
 }
