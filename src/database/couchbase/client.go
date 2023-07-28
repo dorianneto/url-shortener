@@ -1,4 +1,4 @@
-package database
+package couchbase
 
 import (
 	"log"
@@ -12,12 +12,89 @@ import (
 const DEFAULT_SCOPE = "redirects"
 const DEFAULT_COLLECTION = "personal"
 
-type CouchbaseAdapter struct {
-	client     *gocb.Cluster
+type GetResultAdapterInterface interface {
+	Content(valuePtr interface{}) error
+}
+
+type CollectionAdapterInterface interface {
+	Get(id string, opts *gocb.GetOptions) (docOut GetResultAdapterInterface, errOut error)
+	Upsert(id string, val interface{}, opts *gocb.UpsertOptions) (mutOut *gocb.MutationResult, errOut error)
+}
+
+type collectionAdapter struct {
+	collection *gocb.Collection
+}
+
+func (ca *collectionAdapter) Get(id string, opts *gocb.GetOptions) (docOut GetResultAdapterInterface, errOut error) {
+	return ca.collection.Get(id, opts)
+}
+
+func (ca *collectionAdapter) Upsert(id string, val interface{}, opts *gocb.UpsertOptions) (mutOut *gocb.MutationResult, errOut error) {
+	return ca.collection.Upsert(id, val, opts)
+}
+
+type ScopeAdapterInterface interface {
+	Collection(collectionName string) CollectionAdapterInterface
+}
+
+type scopeAdapter struct {
+	scope *gocb.Scope
+}
+
+func (sa *scopeAdapter) Collection(collectionName string) CollectionAdapterInterface {
+	return &collectionAdapter{
+		collection: sa.scope.Collection(collectionName),
+	}
+}
+
+type BucketAdapterInterface interface {
+	WaitUntilReady(timeout time.Duration, opts *gocb.WaitUntilReadyOptions) error
+	Scope(scopeName string) ScopeAdapterInterface
+}
+
+type bucketAdater struct {
+	bucket *gocb.Bucket
+}
+
+func (ba *bucketAdater) WaitUntilReady(timeout time.Duration, opts *gocb.WaitUntilReadyOptions) error {
+	return ba.bucket.WaitUntilReady(timeout, opts)
+}
+
+func (ba *bucketAdater) Scope(scopeName string) ScopeAdapterInterface {
+	return &scopeAdapter{
+		scope: ba.bucket.Scope(scopeName),
+	}
+}
+
+type CouchbaseClientAdapterInterface interface {
+	Bucket(bucketName string) BucketAdapterInterface
+	Close(opts *gocb.ClusterCloseOptions) error
+}
+
+type couchbaseClientAdapter struct {
+	client *gocb.Cluster
+}
+
+func (cca *couchbaseClientAdapter) Bucket(bucketName string) BucketAdapterInterface {
+	return &bucketAdater{
+		bucket: cca.client.Bucket(bucketName),
+	}
+}
+
+func (cca *couchbaseClientAdapter) Close(opts *gocb.ClusterCloseOptions) error {
+	return cca.client.Close(opts)
+}
+
+type couchbaseAdapter struct {
+	client     CouchbaseClientAdapterInterface
 	bucketName string
 }
 
-func (ca *CouchbaseAdapter) getClient() *gocb.Cluster {
+func NewCouchbaseAdapter() *couchbaseAdapter {
+	return &couchbaseAdapter{}
+}
+
+func (ca *couchbaseAdapter) getClient() CouchbaseClientAdapterInterface {
 	if ca.client != nil {
 		return ca.client
 	}
@@ -37,16 +114,18 @@ func (ca *CouchbaseAdapter) getClient() *gocb.Cluster {
 	}
 
 	ca.bucketName = os.Getenv("COUCHBASE_BUCKET")
-	ca.client = cluster
+	ca.client = &couchbaseClientAdapter{
+		client: cluster,
+	}
 
 	return ca.client
 }
 
-func (ca *CouchbaseAdapter) Close() error {
+func (ca *couchbaseAdapter) Close() error {
 	return ca.getClient().Close(nil)
 }
 
-func (ca *CouchbaseAdapter) Read(documentRef string) (*document.ReadOutput, error) {
+func (ca *couchbaseAdapter) Read(documentRef string) (*document.ReadOutput, error) {
 	bucket := ca.getClient().Bucket(ca.bucketName)
 
 	err := bucket.WaitUntilReady(5*time.Second, nil)
@@ -71,7 +150,7 @@ func (ca *CouchbaseAdapter) Read(documentRef string) (*document.ReadOutput, erro
 	return &document.ReadOutput{Data: data}, nil
 }
 
-func (ca *CouchbaseAdapter) Write(documentRef string, data interface{}) (interface{}, error) {
+func (ca *couchbaseAdapter) Write(documentRef string, data interface{}) (interface{}, error) {
 	bucket := ca.getClient().Bucket(ca.bucketName)
 
 	err := bucket.WaitUntilReady(5*time.Second, nil)
