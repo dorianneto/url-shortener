@@ -91,7 +91,9 @@ type couchbaseAdapter struct {
 }
 
 func NewCouchbaseAdapter() *couchbaseAdapter {
-	return &couchbaseAdapter{}
+	return &couchbaseAdapter{
+		bucketName: os.Getenv("COUCHBASE_BUCKET"),
+	}
 }
 
 func (ca *couchbaseAdapter) getClient() CouchbaseClientAdapterInterface {
@@ -113,7 +115,6 @@ func (ca *couchbaseAdapter) getClient() CouchbaseClientAdapterInterface {
 		log.Fatalln(err)
 	}
 
-	ca.bucketName = os.Getenv("COUCHBASE_BUCKET")
 	ca.client = &couchbaseClientAdapter{
 		client: cluster,
 	}
