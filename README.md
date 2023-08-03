@@ -8,6 +8,21 @@ Simple project architectured and designed to put into practice some of the conce
 
 > This is not a commercial project, it's for study purposes only
 
+## Running it
+
+1. `$ go install`
+2. `$ docker compose up -d`
+
+## API
+
+Check this [file](https://github.com/dorianneto/url-shortener/blob/develop/api.http) for more details about the endpoints.
+
+Note: you can install [this extension](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) in VSCode to test the endpoints.
+
+## Deploy
+
+Coming soon...
+
 ## Architecture
 
 ```
