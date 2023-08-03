@@ -6,13 +6,13 @@ on:
       - "v*"
 
 jobs:
+  build:
+    uses: dorianneto/url-shortener/.github/workflows/go.yml@main
   tagged-release:
     name: "Tagged Release"
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: dorianneto/url-shortener/.github/workflows/go.yml@main
-
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
