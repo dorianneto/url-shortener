@@ -9,11 +9,11 @@ on:
 jobs:
   build:
     uses: dorianneto/url-shortener/.github/workflows/go.yml@main
-    permissions:
-      contents: write
   tagged-release:
     name: "Tagged Release"
     runs-on: "ubuntu-latest"
+    permissions:
+      contents: write
 
     steps:
       - uses: "marvinpinto/action-automatic-releases@latest"
