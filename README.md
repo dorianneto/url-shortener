@@ -1,5 +1,7 @@
 # URL Shortner
 
+![build workflow](https://github.com/dorianneto/url-shortener/actions/workflows/build.yml/badge.svg?branch=main)
+
 Simple project architectured and designed to put into practice some of the concepts I've been lately studying, such as:
 
 - Clean Architecture
