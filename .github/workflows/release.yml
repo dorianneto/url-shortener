@@ -8,20 +8,25 @@ on:
 
 jobs:
   build:
-    uses: dorianneto/url-shortener/.github/workflows/go.yml@main
+    uses: dorianneto/url-shortener/.github/workflows/build.yml@main
   tagged-release:
     name: "Tagged Release"
     runs-on: "ubuntu-latest"
+    needs: build
     permissions:
       contents: write
 
     steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
             LICENSE.txt
-            *-darwin
-            *-linux
-            *.exe
+            bin/app-amd64.exe
+            bin/app-amd64-linux
+            bin/app-amd64-darwin
