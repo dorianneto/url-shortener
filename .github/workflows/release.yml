@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     uses: dorianneto/url-shortener/.github/workflows/go.yml@main
+    permissions:
+      contents: write
   tagged-release:
     name: "Tagged Release"
     runs-on: "ubuntu-latest"
