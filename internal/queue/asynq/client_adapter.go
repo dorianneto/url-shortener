@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/dorianneto/url-shortener/src/job"
+	"github.com/dorianneto/url-shortener/internal/job"
 	"github.com/hibiken/asynq"
 )
 

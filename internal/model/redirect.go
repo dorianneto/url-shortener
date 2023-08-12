@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/dorianneto/url-shortener/src/validator"
+	"github.com/dorianneto/url-shortener/internal/validator"
 	uuid "github.com/satori/go.uuid"
 )
 

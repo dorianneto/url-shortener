@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/dorianneto/url-shortener/src/job"
+	"github.com/dorianneto/url-shortener/internal/job"
 	"github.com/hibiken/asynq"
 )
 

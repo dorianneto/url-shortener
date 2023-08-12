@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/dorianneto/url-shortener/src/model"
-	"github.com/dorianneto/url-shortener/src/repository"
+	"github.com/dorianneto/url-shortener/internal/model"
+	"github.com/dorianneto/url-shortener/internal/repository"
 )
 
 const QUEUE_NAME string = "create:redirect"

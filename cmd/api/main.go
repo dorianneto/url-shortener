@@ -4,11 +4,11 @@ import (
 	"log"
 	"os"
 
-	controller "github.com/dorianneto/url-shortener/src/controller/redirect"
-	"github.com/dorianneto/url-shortener/src/database/firestore"
-	"github.com/dorianneto/url-shortener/src/job"
-	"github.com/dorianneto/url-shortener/src/queue/asynq"
-	"github.com/dorianneto/url-shortener/src/repository"
+	controller "github.com/dorianneto/url-shortener/internal/controller/redirect"
+	"github.com/dorianneto/url-shortener/internal/database/firestore"
+	"github.com/dorianneto/url-shortener/internal/job"
+	"github.com/dorianneto/url-shortener/internal/queue/asynq"
+	"github.com/dorianneto/url-shortener/internal/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
