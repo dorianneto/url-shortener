@@ -37,21 +37,15 @@ jobs:
         run: |
           go get -u ./...
           go mod tidy
-        env:
-          GOPATH: /home/runner/work/url-shortener/url-shortener/internal
 
       - name: Test
         run: go test -v ./...
-        env:
-          GOPATH: /home/runner/work/url-shortener/url-shortener/internal
 
       - name: Build
         run: |
           GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o ./bin/app-amd64.exe ./cmd/api/main.go
           GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o ./bin/app-amd64-linux ./cmd/api/main.go
           GOOS=darwin GOARCH=arm64 go build -ldflags "-s -w" -o ./bin/app-amd64-darwin ./cmd/api/main.go
-        env:
-          GOPATH: /home/runner/work/url-shortener/url-shortener/internal
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
