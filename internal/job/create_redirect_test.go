@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/dorianneto/url-shortener/src/controller/redirect/input"
-	"github.com/dorianneto/url-shortener/src/model"
+	"github.com/dorianneto/url-shortener/internal/controller/redirect/input"
+	"github.com/dorianneto/url-shortener/internal/model"
 )
 
 var createFn func(redirect *model.Redirect) (*model.Redirect, error) = func(redirect *model.Redirect) (*model.Redirect, error) {

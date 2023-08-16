@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"cloud.google.com/go/firestore"
-	"github.com/dorianneto/url-shortener/src/database/output/document"
+	"github.com/dorianneto/url-shortener/internal/database/output/document"
 )
 
 type documentAdapterInterface interface {

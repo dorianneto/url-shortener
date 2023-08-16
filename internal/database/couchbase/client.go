@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/couchbase/gocb/v2"
-	"github.com/dorianneto/url-shortener/src/database/output/document"
+	"github.com/dorianneto/url-shortener/internal/database/output/document"
 )
 
 const DEFAULT_SCOPE = "redirects"

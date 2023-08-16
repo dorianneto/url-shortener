@@ -3,11 +3,11 @@ package redirect
 import (
 	"net/http"
 
-	"github.com/dorianneto/url-shortener/src/controller/redirect/input"
-	"github.com/dorianneto/url-shortener/src/job"
-	"github.com/dorianneto/url-shortener/src/model"
-	"github.com/dorianneto/url-shortener/src/queue"
-	"github.com/dorianneto/url-shortener/src/repository"
+	"github.com/dorianneto/url-shortener/internal/controller/redirect/input"
+	"github.com/dorianneto/url-shortener/internal/job"
+	"github.com/dorianneto/url-shortener/internal/model"
+	"github.com/dorianneto/url-shortener/internal/queue"
+	"github.com/dorianneto/url-shortener/internal/repository"
 	"github.com/gin-gonic/gin"
 )
 

@@ -1,6 +1,6 @@
 package queue
 
-import "github.com/dorianneto/url-shortener/src/job"
+import "github.com/dorianneto/url-shortener/internal/job"
 
 type QueueClientInterface interface {
 	Dispatch(job job.BaseJobInterface) error

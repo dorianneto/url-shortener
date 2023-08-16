@@ -1,6 +1,6 @@
 package database
 
-import "github.com/dorianneto/url-shortener/src/database/output/document"
+import "github.com/dorianneto/url-shortener/internal/database/output/document"
 
 type DocumentInterface interface {
 	Read(documentRef string) (*document.ReadOutput, error)

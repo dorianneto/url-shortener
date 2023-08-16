@@ -4,9 +4,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/dorianneto/url-shortener/src/controller/redirect/input"
-	"github.com/dorianneto/url-shortener/src/database/output/document"
-	"github.com/dorianneto/url-shortener/src/model"
+	"github.com/dorianneto/url-shortener/internal/controller/redirect/input"
+	"github.com/dorianneto/url-shortener/internal/database/output/document"
+	"github.com/dorianneto/url-shortener/internal/model"
 )
 
 var readFn func() (*document.ReadOutput, error) = func() (*document.ReadOutput, error) {

@@ -7,8 +7,8 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 
 RUN git config --global --add safe.directory /usr/src/app && \
-    go build -ldflags "-s -w" .
+    go build -ldflags "-s -w" -o ./bin/api ./cmd/api/main.go
 
 EXPOSE 8080
 
-CMD ["./url-shortener"]
+CMD ["./bin/api"]

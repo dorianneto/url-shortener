@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"github.com/dorianneto/url-shortener/src/controller/redirect/input"
-	"github.com/dorianneto/url-shortener/src/database"
-	"github.com/dorianneto/url-shortener/src/model"
+	"github.com/dorianneto/url-shortener/internal/controller/redirect/input"
+	"github.com/dorianneto/url-shortener/internal/database"
+	"github.com/dorianneto/url-shortener/internal/model"
 )
 
 type RedirectRepositoryInterface interface {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dorianneto/url-shortener/src/job/jobtest"
+	"github.com/dorianneto/url-shortener/internal/job/jobtest"
 	"github.com/hibiken/asynq"
 )
 

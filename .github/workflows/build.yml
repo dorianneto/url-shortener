@@ -19,7 +19,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.19
+          go-version: '1.20'
 
       - name: Display Go version
         run: go version
@@ -34,29 +34,25 @@ jobs:
           ls -al ${GOPATH}
 
       - name: Install dependencies
-        run: go get .
-        env:
-          GOPATH: /home/runner/work/url-shortener/url-shortener/src
+        run: |
+          go get ./...
+          go mod tidy
 
       - name: Test
         run: go test -v ./...
-        env:
-          GOPATH: /home/runner/work/url-shortener/url-shortener/src
 
       - name: Build
         run: |
-          GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o bin/app-amd64.exe .
-          GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o bin/app-amd64-linux .
-          GOOS=darwin GOARCH=arm64 go build -ldflags "-s -w" -o bin/app-amd64-darwin .
-        env:
-          GOPATH: /home/runner/work/url-shortener/url-shortener/src
+          GIN_MODE=release GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o ./bin/app-amd64.exe ./cmd/api/main.go
+          GIN_MODE=release GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o ./bin/app-amd64-linux ./cmd/api/main.go
+          GIN_MODE=release GOOS=darwin GOARCH=arm64 go build -ldflags "-s -w" -o ./bin/app-amd64-darwin ./cmd/api/main.go
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: dist
           path: |
-            bin/app-amd64.exe
-            bin/app-amd64-linux
-            bin/app-amd64-darwin
+            ./bin/app-amd64.exe
+            ./bin/app-amd64-linux
+            ./bin/app-amd64-darwin
             LICENSE.txt
