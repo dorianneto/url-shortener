@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	cloud.google.com/go/firestore v1.12.0
-	github.com/couchbase/gocb/v2 v2.6.3
+	github.com/couchbase/gocb/v2 v2.6.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/validator/v10 v10.15.0
 	github.com/hibiken/asynq v0.24.1
