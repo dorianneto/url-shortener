@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   app:
     build:
@@ -26,12 +25,14 @@ services:
       - backend
 
   firestore:
-    build:
-      context: .
-      dockerfile: ./.docker/firestore/Dockerfile
+    image: mtlynch/firestore-emulator:latest
     restart: always
+    platform: linux/amd64
     ports:
-      - 8001:8001
+      - "8001:8001"
+    environment:
+      - FIRESTORE_PROJECT_ID=fake-project-id
+      - PORT=8001
     networks:
       - backend
 
@@ -40,6 +41,7 @@ services:
       context: .
       dockerfile: ./.docker/couchbase/Dockerfile
     restart: always
+    platform: linux/arm64
     ports:
       - 8091-8097:8091-8097
       - 9123:9123
